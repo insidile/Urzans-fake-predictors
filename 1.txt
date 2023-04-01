@@ -1,0 +1,107 @@
+import discord
+from discord.ext import commands
+import json
+import hashlib
+import cloudscraper as cs
+import requests
+from webserver import keep_alive
+
+scraper = cs.create_scraper()
+
+bot = discord.Bot(command_prefix="cp", intents = discord.Intents.default())
+
+
+with open("keys.json", "r") as f:
+    keys = json.load(f)
+
+
+
+@bot.slash_command()
+async def login(ctx, auth_token: str):
+    if str(ctx.author.id) in keys:
+        keys[str(ctx.author.id)]["auth_token"] = auth_token
+    else:
+        keys[str(ctx.author.id)] = {"auth_token": auth_token}
+    with open("keys.json", "w") as f:
+        json.dump(keys, f)
+    await ctx.respond("Account connected to Vhor!", ephemeral=True)
+
+
+
+@bot.slash_command()
+@commands.has_role("Buyer")
+async def authmines(ctx):
+
+        with open("keys.json", "r") as f:
+            user_keys = keys.get(str(ctx.author.id))
+            if user_keys:
+                 auth_token = user_keys.get("auth_token")
+                 headers = {
+                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36',
+                 'X-Auth-Token': auth_token
+             }
+  
+                 response = requests.get('https://rest-bf.blox.land/games/mines', headers=headers)
+                 print(response.text)
+     
+                 data = json.loads(response.text)
+                 if 'Authentication failed' in response.text:
+                    embed = discord.Embed(title="**Vhor**", description="Auth is invalid!")
+                    await ctx.respond(embed=embed)  
+                 if '"hasGame":false' in response.text:
+                    embed = discord.Embed(title="**Vhor**", description="Please start a game!")
+                    await ctx.respond(embed=embed, ephemeral=True)  
+                    return
+                 else:
+                    print(data)
+                    mines_amount = data['game']['minesAmount']
+                    uuid = data['game']['uuid']
+                    multiplier = data['multiplier']
+                    bet_amount = data['game']['betAmount']  
+                    # code for the mine command goes here
+                    with open("saving.txt", "r") as f:
+                        if str(uuid) in f.read():
+                            await ctx.respond("Game value already made!")
+                            return
+                        else:
+                          with open("keys.json", "r") as f:
+                            user_keys = keys.get(str(ctx.author.id))
+                        if user_keys:
+                            auth_token = user_keys.get("auth_token")
+                            xToken = auth_token
+                            auth =  auth_token
+                            scraper = cs.create_scraper()
+                            
+                            r = scraper.get('https://rest-bf.blox.land/games/mines/history', headers={"x-auth-token": auth}, params={ 'size': '1','page': '0',}  ) #send a get requests to the api to get info
+                            
+                            mines_amount = (r.json()['data'][0]['minesAmount'])
+                            uuid = (r.json()['data'][0]['uuid']) #get jus the uuid (round_id) from the page
+
+                            mines_location = (r.json()['data'][0]['mineLocations']) #most recent mines location, we will use this to make a guess or a "prediction"
+
+                            clicked_spots = (r.json()['data'][0]['uncoveredLocations']) #most recent spots you clicked in yourt last game
+
+                            grid = ['<:icyunknown:1086767631866015805>'] * 25 #make a 5x5 (25 total) grid
+
+                            for x in mines_location: #make each bomb postion show up on grid
+                                grid[x] = 'X' #change the bomb posititons to differnt character
+
+                            for x in clicked_spots: #loop through every time u clicked and make it convert to grid
+                                grid[x] = 'O' #change the clicked positions to differnt character
+
+
+                            grid = ['<:icyunknown:1086767631866015805>'] * 25 #redefine grid so it resets
+
+                            roundId = int(''.join(filter(str.isdigit, uuid))) #get only numbers from round id, u could also use this to make a round id verifier
+
+                            roundNum = int(str(roundId)[:2]) #get the first two numbers out of the round id
+                            grid[int(roundNum / 4)] = '<:icywin:1086767533836746842>' #change it to O to know where to click
+                            grid[int(roundNum / 8)] = '<:icywin:1086767533836746842>' #change it to O to know where to click
+                            grid[int(roundNum / 12)] = '<:icywin:1086767533836746842>' #change it to O to know where to click
+
+                            em = discord.Embed(title="**Vhor**", color=discord.Color.red())
+                            em.add_field(name="**Minesweeper**", value=f"{grid[0]+grid[1]+grid[2]+grid[3]+grid[4]}"+ "\n" + f"{grid[5]+grid[6]+grid[7]+grid[8]+grid[9]}" + "\n" + f"{grid[10]+grid[11]+grid[12]+grid[13]+grid[14]}"+ \
+                                "\n" + f"{grid[15]+grid[16]+grid[17]+grid[18]+grid[19]}" + "\n" + f"{grid[20]+grid[21]+grid[22]+grid[23]+grid[24]}\n**Last Round ID**\n{uuid}\n**Note**\nUse same amount of bombs as last time ({mines_amount})")
+                            await ctx.respond(embed=em)
+            else:
+                await ctx.respond("No auth linked.")
