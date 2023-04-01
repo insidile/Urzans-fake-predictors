@@ -1,0 +1,83 @@
+import discord
+from discord.ext import commands
+import json
+import random
+import requests
+import uuid
+from webserver import keep_alive
+import os
+
+#create a bot with intents
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"), intents=intents)
+def checker2(game_id):
+    count = 0
+    includes_dash = False
+    includes_number1 = ""
+    includes_number2 = ""
+    for v in game_id:
+        count += 1
+        if count == 9:
+            if v == "-":
+                includes_dash = True
+        if count == 15:
+            includes_number1 += v
+        if count == 22:
+            includes_number2 +=v
+    if includes_dash == True:
+        if includes_number1 == "4":
+            return  True
+        else:
+            return False
+    else:
+        return False 
+failure = "❌"
+def checker(KEY):
+    with open("keys.txt", "r") as f:
+        read = f.read()
+        if KEY in read:
+            return True
+        else:
+            return False
+def rmk(KEY):
+    with open("keys.txt", "r") as f:
+        read = f.read()
+        read = read.replace(KEY, "")
+        with open("keys.txt", "w") as f:
+            f.write(read)
+def idadd(ID):
+   with open("ID.txt", "a") as f:
+     f.write(str(ID))
+     
+@bot.slash_command()
+async def claim(ctx ,key):
+    if checker(key) == True:
+       await ctx.respond("pls wait....")
+       #give the author role ID= 1053704040174858270
+       await ctx.respond("Giving You Buyer Permission.....")
+       #add ctx. author id to ID.txt
+       idadd(str(ctx.author.id))
+       #remove key from keys.txt
+       rmk(key)
+       await ctx.respond(":star:Done")
+    else:
+        await ctx.respond("Invalid Key:bomb:")
+@bot.slash_command()
+async def freemines(ctx, round_id):
+  if checker2(round_id) == True:
+    if ctx.channel.id == 1053606859229114398:    
+        mines1, mines2, mines3, mines4, mines5, mines6, mines7, mines8, mines9, mines10, mines11, mines12, mines13, mines14, mines15, mines16, mines17, mines18, mines19, mines20, mines21, mines22, mines23, mines24, mines25 = ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:', ':bomb:'
+        a = random.randint(1, 8)
+        if a == 1:
+            mines1 = ":white_check_mark:"
+        elif a == 2:
+            mines2 = ":white_check_mark:"
+        elif a == 3:
+            mines3 = ":white_check_mark:"
+        elif a == 4:
+            mines4 = ":white_check_mark:"
+        elif a == 5:
+            mines5 = ":white_check_mark:"
+        elif a == 6:
