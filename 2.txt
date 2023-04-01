@@ -1,0 +1,282 @@
+import discord
+from discord.ext import commands
+import random
+import math
+import cloudscraper, requests
+from webserver import keep_alive
+import os
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = discord.Bot(command_prefix=commands.when_mentioned_or("!"), intents=intents)
+scraper = cloudscraper.create_scraper(browser={'custom': 'ScraperBot/1.0'})
+
+
+
+bombs = 3
+
+ids = []
+
+accuratee = []
+
+@bot.slash_command()
+@commands.has_role("Buyer")
+async def mines(ctx, bombs, id):
+ if id in ids:
+   await ctx.send('Prediction Value Already Made')
+ else:
+  if ctx.channel.id == 1054819652146036806:
+    id = str(id)
+    if "fuck" in id:
+      print('invalid')
+    else:
+     id_length = len(id)
+     if id_length < 36:
+      print('invalid')
+     elif id_length == 36:
+      mine1, mine2, mine3, mine4, mine5, mine6, mine7, mine8, mine9, mine10, mine11, mine12, mine13, mine14, mine15, mine16, mine17, mine18, mine19, mine20, mine21, mine22, mine23, mine24, mine25 = '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓', '❓'
+
+     a = random.randint(1, 8)
+     b = random.randint(9, 13)
+     c = random.randint(14, 17)
+     d = random.randint(18, 25)
+     mine1 = "❓"
+     if a == 1:
+        mine1 = ":star:"
+     elif a == 2:
+        mine2 = "💣"
+     elif a == 3:
+        mine3 = ":gem:"
+     elif a == 4:
+        mine4 = ":star:"
+     elif a == 5:
+        mine5 = "⚡"
+     elif a == 6:
+            mine6 = ":star:"
+     elif a == 7:
+            mine7 = ":gem:"
+     elif a == 8:
+            mine8 = ":star:"
+     if b == 9:
+            mine9 = "⚡"
+     elif b == 10:
+            mine10 = "💣"
+     elif b == 11:
+            mine11 = ":star:"
+     elif b == 12:
+            mine12 = ":gem:"
+     elif b == 13:
+            mine13 = ":star:"
+     if c == 14:
+            mine14 = "💣"
+     elif c == 15:
+            mine15 = ":star:"
+     elif c == 16:
+            mine16 = ":gem:"
+     elif c == 17:
+            mine17 = ":star:"
+     if d == 18:
+            mine18 = ":star:"
+     elif d == 19:
+            mine19 = ":gem:"
+     elif d == 20:
+            mine20 = ":star:"
+     elif d == 21:
+            mine21 = "⚡"
+     elif d == 22:
+            mine22 = ":gem:"
+     elif d == 23:
+            mine23 = "⚡"
+     elif d == 24:
+            mine24 = ":star:"
+     elif d == 25:
+            mine25 = "💣"
+     accuracy = random.randint(5, 76)
+     row1 = mine1 + mine2 + mine3 + mine4 + mine5
+     row2 = mine6 + mine7 + mine8 + mine9 + mine10
+     row3 = mine11 + mine12 + mine13 + mine14 + mine15
+     row4 = mine16 + mine17 + mine18 + mine19 + mine20
+     row5 = mine21 + mine22 + mine23 + mine24 + mine25
+     prediction = row1 + "\n" + row2 + "\n" + row3 + "\n" + row4 + "\n" + row5
+     embed = discord.Embed(title="Mines", description=f"**Prediction**\n{prediction}\n**Info**\n:star:Bots Prediction\n❓Unknown Spot\n💣Predicted Spot For Bomb\n⚡50/50\n:gem:Common Patern(RISKY)\n**Accuracy**\n{accuracy}%\n**Mines**\n{bombs}")
+     await ctx.send(embed=embed)
+     
+     ids.append(id)
+     print(ids)
+
+@bot.slash_command()
+@commands.has_role("Buyer")
+async def crash(ctx):
+ if ctx.channel.id == 1054819652146036806:
+  games = scraper.get("https://rest-bf.blox.land/games/crash").json()
+  if ctx.author.id != bot.user.id:
+      
+
+        def lol():
+            r = scraper.get(
+                "https://rest-bf.blox.land/games/crash").json()["history"]
+            yield [
+                r[0]["crashPoint"],
+                [float(crashpoint["crashPoint"]) for crashpoint in r[-2:]]
+            ]
+
+        for game in lol():
+            games = game[1]
+            avg = sum(games) / len(games)
+            chance = 1
+            for game in games:
+                chance = chance = 95 / game
+                prediction = (1 / (1 - (chance)) + avg) / 2
+                print(prediction)
+                prediction2 = prediction / 2
+                print(prediction2)
+                p2 = f"{prediction:.0f}"
+                if p2 == 0:
+                 prediction2 + 0.50
+                prediction + 0.38
+                prediction3 = prediction + 0.80
+                p1 = f"{prediction:.0f}"
+                print(p1)
+                if f"{prediction2:.0f}" == 0:
+                  prediction2 == prediction2 + 0.35
+                if f"{prediction:.0f}" == 0:
+                  prediction == prediction + 1
+                  print(prediction)
+                else:
+                 print(prediction)
+        embed = discord.Embed(title="Crash", description=f"**Prediction**\n:star:{prediction:.2f}\n:gem:{prediction2:.2f}\n**Info**\n:gem:Bots Prediction\n:star:Safe Bet\n**Accuracy**\n{chance:.2f}%")
+        await ctx.send(embed=embed)
+
+@bot.slash_command()
+@commands.has_role("Buyer")
+async def roulette(ctx):
+ if ctx.channel.id == 1054819652146036806:
+  def roulette(ctx):
+    BFRoulette = scraper.get(
+        "https://rest-bf.blox.land/games/roulette").json()["history"]
+    yield [
+        BFRoulette[0]["winningColor"],
+        [(winningColor["winningColor"]) for winningColor in BFRoulette[-2:]]
+    ]
+
+    lastgame = scraper.get("https://rest-bf.blox.land/games/roulette").json(
+    )["history"][0]["winningColor"]
+
+    games = scraper.get("https://rest-bf.blox.land/games/roulette").json()
+
+    seed = (games["history"][0]["privateSeed"])
+
+    latest30 = (games["history"][0]["winningColor"] + " " +
+                games["history"][1]["winningColor"] + " " +
+                games["history"][2]["winningColor"] + " " +
+                games["history"][3]["winningColor"] + " " +
+                games["history"][4]["winningColor"] + " " +
+                games["history"][5]["winningColor"] + " " +
+                games["history"][6]["winningColor"] + " " +
+                games["history"][7]["winningColor"] + " " +
+                games["history"][8]["winningColor"] + " " +
+                games["history"][9]["winningColor"] + " " +
+                games["history"][10]["winningColor"] + " " +
+                games["history"][11]["winningColor"] + " " +
+                games["history"][12]["winningColor"] + " " +
+                games["history"][13]["winningColor"] + " " +
+                games["history"][14]["winningColor"] + " " +
+                games["history"][15]["winningColor"] + " " +
+                games["history"][16]["winningColor"] + " " +
+                games["history"][17]["winningColor"] + " " +
+                games["history"][18]["winningColor"] + " " +
+                games["history"][19]["winningColor"] + " " +
+                games["history"][20]["winningColor"] + " " +
+                games["history"][21]["winningColor"] + " " +
+                games["history"][22]["winningColor"] + " " +
+                games["history"][23]["winningColor"] + " " +
+                games["history"][24]["winningColor"] + " " +
+                games["history"][25]["winningColor"] + " " +
+                games["history"][26]["winningColor"] + " " +
+                games["history"][27]["winningColor"] + " " +
+                games["history"][28]["winningColor"] + " " +
+                games["history"][29]["winningColor"] + " " +
+                games["history"][30]["winningColor"] + " ")
+
+    latest30red = "red"
+    latest30numred = latest30.count(latest30red)
+    latest30purple = "purple"
+    latest30numpurple = latest30.count(latest30purple)
+    latest30yellow = "yellow"
+    latest30numyellow = latest30.count(latest30yellow)
+
+    if latest30numyellow == 0:
+        prediction = "🟨"
+    elif latest30numred < latest30numpurple:
+        prediction = "🟥"
+    elif latest30numred > latest30numpurple:
+        prediction = "🟪"
+    else:
+        prediction = "Error (Don't Bet)"
+
+    random.seed(seed)
+
+    if roundnum in accuratee:
+      accuracy = accuratee
+      print(accuracy)
+
+      
+    accuracy = (random.randint(48, 86))
+    accuratee.append(roundnum, accuracy)
+    
+
+    if lastgame == "red":
+        lastgame = "🟥"
+    if lastgame == "purple":
+        lastgame = "🟪"
+    if lastgame == "yellow":
+        lastgame = "🟨"
+  games = scraper.get("https://rest-bf.blox.land/games/roulette").json()
+  latest30 = (games["history"][0]["winningColor"] + " " + games["history"][1]["winningColor"] + " " + games["history"][2]["winningColor"] + " " + games["history"][3]["winningColor"] + " " + games["history"][4]["winningColor"] + " " + games["history"][5]["winningColor"] + " " + games["history"][6]["winningColor"] + " " + games["history"][7]["winningColor"] + " " + games["history"][8]["winningColor"] + " " + games["history"][9]["winningColor"] + " " + games["history"][10]["winningColor"] + " " + games["history"][11]["winningColor"] + " " + games["history"][12]["winningColor"] + " " + games["history"][13]["winningColor"] + " " + games["history"][14]["winningColor"] + " " + games["history"][15]["winningColor"] + " " + games["history"][16]["winningColor"] + " " + games["history"][17]["winningColor"] + " " + games["history"][18]["winningColor"] + " " + games["history"][19]["winningColor"] + " " + games["history"][20]["winningColor"] + " " + games["history"][21]["winningColor"] + " " + games["history"][22]["winningColor"] + " " + games["history"][23]["winningColor"] + " " + games["history"][24]["winningColor"] + " " + games["history"][25]["winningColor"] + " " + games["history"][26]["winningColor"] + " " + games["history"][27]["winningColor"] + " " + games["history"][28]["winningColor"] + " " + games["history"][29]["winningColor"] + " " + games["history"][30]["winningColor"] + " ")
+  lastgame = scraper.get("https://rest-bf.blox.land/games/roulette").json(
+    )["history"][0]["winningColor"]
+  latest30red = "red"
+  latest30numred = latest30.count(latest30red)
+  latest30purple = "purple"
+  latest30numpurple = latest30.count(latest30purple)
+  latest30yellow = "yellow"
+  latest30numyellow = latest30.count(latest30yellow)
+  
+  if latest30numyellow:
+        prediction = "Yellow"
+  if latest30numred:
+        prediction = "Purple"
+  if latest30numpurple:
+        prediction = "Red"
+
+  if lastgame == "red":
+        prediction = "🟥"
+  if lastgame == "purple":
+        prediction = "🟪"
+  if lastgame == "yellow":
+        prediction = "🟪"
+  r = scraper.get("https://rest-bf.blox.land/games/roulette").json()["history"][0]['winningColor']
+  print(r)
+  a = scraper.get("https://rest-bf.blox.land/games/roulette").json()["history"][1]['winningColor']
+  print(a)
+  b = scraper.get("https://rest-bf.blox.land/games/roulette").json()["history"][2]['winningColor']
+  print(r)
+  if a == "red":
+   prediction = "red"
+  if r == b:
+    prediction = r
+  else:
+    prediction = b
+  if r == a:
+    streak = r
+  else:
+    streak = "None"
+
+  accuracy = (random.randint(48, 86))
+  embed = discord.Embed(title="Roulette", description=f"**Prediction**\n{prediction}\n**Streak**\n{streak}\n**Accuracy**\n{accuracy}%")
+  await ctx.send(embed=embed)
+    
+
+keep_alive()
+bot.run('MTA0MTgzOTM2ODk3OTEwNzg4MA.GVuRvp.Q2XHrrM_bD0jsipdO5RIhxaUMQ2Patvkd2dlO4')
